@@ -1,30 +1,12 @@
 const discord = require('discord.js');
-const YTDL = require('ytdl-core');
-var opusscript = require('opusscript');
-var ffmpegDiscord = require('discord.js-arbitrary-ffmpeg');
-var ffmpeg = require('ffmpeg');
+const opusscript = require('opusscript');
+const music = require('discord.js-music-v11');
 const bot = new discord.Client(); 
 
 var prefix = (".")
 var secondaryPrefix = ("?")
 
-function play(connection, message){
-    var server = servers[message.guild.id];
 
-    server.dispatcher = connection.playStream(YTDL(server.queue[0], {filter: "audioonly"}));
-
-    server.queue.shift();
-
-    server.dispatcher.on("end", function(){
-        if(server.queue[0]){
-            play(connection, message);
-        }else{
-            connection.disconect();
-        }
-    });
-}
-
-var servers = {};
 
 bot.on('ready', function(){
     
@@ -96,41 +78,10 @@ bot.on('message', message =>{;
             message.channel.sendEmbed(embed);
     }
 
-    if(message.content.startsWith(prefix + "play")){
-        if(!args[1]){
-            message.reply("Met un lien putain");
-            return;
-        }
-
-        if(!message.member.voiceChannel){
-            message.reply("Tu peut aller dans un channel vocal ? PLUS VITE !");
-            return;
-        }
-
-        var server = servers[message.guild.id] = {
-            queue: []
-        };
-
-        server.queue.push(args[1]);
-
-        if(!message.guild.voiceConnection){
-            message.member.voiceChannel.join().then(function(connection){
-                play(connection, message);
-            });
-        }
-
-    }
-
-    if(message.content === 'skip'){
-        var server = servers[message.guil.id];
-        if(server.dispatcher) server.dispatcher.end();
-    }
-
-    if(message.content === "stop"){
-        var server = servers[message.guil.id];
-        if(message.guild.voiceConnection) message.guild.voiceConnection.disconnect();
-    }
-
+  
 });
+
+music(bot);
+music(index.js, option.txt);
 
 bot.login(process.env.TOKEN);
