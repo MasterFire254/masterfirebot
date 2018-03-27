@@ -1,0 +1,16 @@
+{
+  "name": "botdiscord",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Master_Fire",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.3.2",
+    "opusscript": "0.0.6",
+    "ytdl-core": "^0.20.2"
+  }
+}
