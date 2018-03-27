@@ -1,0 +1,6 @@
+prefix: "."
+global: false
+maxQueueSize: 20
+anyoneCanSkip: true
+clearInvoker: false
+volume: 0.15
