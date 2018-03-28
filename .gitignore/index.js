@@ -4,6 +4,7 @@ const bot = new discord.Client();
 var prefix = (".")
 var secondaryPrefix = ("?")
 
+var role = "Rebel";
 
 
 bot.on('ready', function(){
@@ -27,7 +28,7 @@ bot.on('message', message =>{;
             .setTitle("Page d'aide")
             .addField(".ban [@pseudo] ","Permet de ban des joueurs")
             .addField(".kick [@pseudo]", "Permet de kick des joueurs")
-            .addField(".changecolor [@role]","Permet de changer la couleur d'un role")
+            .addField(".discordinfo","Permet d'avoir des infos sur le Discord")
             .addField(".helpmusic","Permet de voir les commandes pour les musics")
             .setColor(255, 0, 0)
             message.channel.sendEmbed(embed);
@@ -76,9 +77,31 @@ bot.on('message', message =>{;
             message.channel.sendEmbed(embed);
     }
 
+    if(message.content === prefix + "discordinfo"){
+        var embed = new discord.RichEmbed()
+            .setTitle("Information du discord")
+            .addField("Nom du discord : " + message.guild.name)
+            .addField("Crée le : " + message.guild.createdAt)
+            .addField("Tu nous a rejoin le : " + message.member.joinedAt)
+            .addField("Il y a " + message.guild.memberCount + " de personnes.")
+            .setColor("0x0000FF")
+        message.channel.sendEmbed(embed);
+    }
+
+    if(message.content.startsWith(prefix + "changeRole")){
+        if(message.member.permissions.has('ADMINISTRATOR')){
+            if(!args[1]) return message.reply("Met un role");
+                role = args[1]
+                message.reply("Le role a bien été changer");
+        }
+    }
+
   
 });
 
-
+bot.on("guildMemberAdd", member =>{
+    member.guild.channels.find("name", "general").send(`Bienvenue ${member}`);
+    member.addRole(member.guild.roles.find('name', role));
+})
 
 bot.login(process.env.TOKEN);
