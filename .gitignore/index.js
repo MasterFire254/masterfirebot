@@ -1,6 +1,4 @@
 const discord = require('discord.js');
-const opusscript = require('opusscript');
-const music = require('discord.js-music-v11');
 const bot = new discord.Client(); 
 
 var prefix = (".")
@@ -81,7 +79,6 @@ bot.on('message', message =>{;
   
 });
 
-music(bot);
-music(index.js, option.txt);
+
 
 bot.login(process.env.TOKEN);
