@@ -4,7 +4,7 @@ const bot = new discord.Client();
 var prefix = (".")
 var secondaryPrefix = ("?")
 
-var role = "Rebel";
+var role = "Utilisateur";
 
 
 bot.on('ready', function(){
