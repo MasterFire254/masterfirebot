@@ -119,7 +119,8 @@ bot.on('message', message =>{;
   
     //MUSIC
     if(message.content.startsWith(prefix + "play")){
-        if(!message.member.voiceChannel){
+        if(message.member.voiceChannel){
+            if(!args [1]) return message.reply("Met un lien");
             let voiceChannel = message.guild.channels.filter(function(chnnel){return chnnel.type === 'voice'}).first();
             voiceChannel.join().then(function(connection){
                     let stream = youtubeStream(args[1]);
@@ -133,6 +134,8 @@ bot.on('message', message =>{;
                     })
         
             })
+        }else{
+            message.reply("Va dans un channel vocal");
         }
     }
 });
