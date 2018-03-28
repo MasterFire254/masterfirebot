@@ -31,14 +31,14 @@ bot.on('message', message =>{;
         var embed = new discord.RichEmbed()
             .setTitle("Page d'aide")
             .addBlankField()
-            .addField("Commandes pour les admins")
+            .addField("Commandes pour les admins", "Commandes réservées au best")
             .addField(".ban [@pseudo] ","Permet de ban des joueurs")
             .addField(".kick [@pseudo]", "Permet de kick des joueurs")
             .addField(".changerole [role]", "Permet de changer le role qui est donné aux nouveaux arrivants")
             .addBlankField()
-            .addField("Commandes pour tous le mondes")
+            .addField("Commandes pour tous le mondes", "Commandes utiles mais pas marrantes")
             .addField(".discordinfo","Permet d'avoir des infos sur le Discord")
-            .addField(".helpmusic","Permet de voir les commandes pour les musics")
+            .addField(".play [link]","Permet de jouer une vidéo graçe à un lien youtube")
             .setColor(255, 0, 0)
             message.channel.sendEmbed(embed);
 
@@ -75,18 +75,8 @@ bot.on('message', message =>{;
 
     }
 
-    //MUSIC
-    if(message.content === prefix + "helpmusic"){
-        var embed = new discord.RichEmbed()
-            .setTitle("Help Music")
-            .setDescription("Les commandes ci-dessous seront bientot disponible.")
-            .addField(".play [link]", "Permet de jouer une music a partir d'un lien youtube.")
-            .addField(".stop", "Permet de stopper la music.")
-            .addField(".skip","Permet de passer à la music suivante.")
-            .setColor(0, 255, 0)
-            message.channel.sendEmbed(embed);
-    }
 
+    //DISCORD INFO
     if(message.content === prefix + "discordinfo"){
         var embed = new discord.RichEmbed()
             .setTitle("Information du discord")
@@ -98,6 +88,7 @@ bot.on('message', message =>{;
         message.channel.sendEmbed(embed);
     }
 
+    //CHANGE ROLE
     if(message.content.startsWith(prefix + "changerole")){
         if(message.member.permissions.has('ADMINISTRATOR')){
             if(!args[1]) return message.reply("Met un role");
@@ -106,6 +97,8 @@ bot.on('message', message =>{;
         }
     }
 
+
+    //CHANGE COLOR
     if(message.content.startsWith(prefix + "changenamecolor")){
         if(!args [1]){
             var embed = new discord.RichEmbed()
@@ -114,25 +107,27 @@ bot.on('message', message =>{;
         }
     }
   
+    //MUSIC
     if(message.content.startsWith(prefix + "play")){
+        if(!message.member.voiceChannel){
+            let voiceChannel = message.guild.channels.filter(function(chnnel){return chnnel.type === 'voice'}).first();
+            voiceChannel.join().then(function(connection){
+
+                        stream.on('error', function(){
+                        message.reply("Impossible de lire la vidéo");
+                        connection.disconnect();
+                    })
+                    let stream = youtubeStream(args[1]);
+                    connection.playStream(stream).on('end', function(){
+                        connection.disconnect();
+                    })
         
-        let voiceChannel = message.guild.channels.filter(function(chnnel){return chnnel.type === 'voice'}).first();
-        voiceChannel.join().then(function(connection){
-
-                    stream.on('error', function(){
-                    message.reply("Impossible de lire la vidéo");
-                    connection.disconnect();
-                })
-                let stream = youtubeStream(args[1]);
-                connection.playStream(stream).on('end', function(){
-                    connection.disconnect();
-                })
-       
-        })
+            })
+        }
     }
-
 });
 
+//AUTO ROLE ET BIENVENUE
 bot.on("guildMemberAdd", member =>{
     member.guild.channels.find("name", "general").send(`Bienvenue ${member}`);
     if(!member.guild.roles.find('name', role)) return console.log("Role inconnu");
