@@ -35,6 +35,7 @@ bot.on('message', message =>{;
             .addField(".ban [@pseudo] ","Permet de ban des joueurs")
             .addField(".kick [@pseudo]", "Permet de kick des joueurs")
             .addField(".changerole [role]", "Permet de changer le role qui est donné aux nouveaux arrivants")
+            .addField(".changeprefix [prefix]", "Permet de changer le prefix pour faire une commandes")
             .addBlankField()
             .addField("Commandes pour tous le mondes", "Commandes utiles mais pas marrantes")
             .addField(".discordinfo","Permet d'avoir des infos sur le Discord")
@@ -100,7 +101,7 @@ bot.on('message', message =>{;
     //CHANGE PREFIX
     if(message.content.startsWith(prefix + "changeprefix")){
         if(message.member.permissions.has('ADMINISTRATOR')){
-            if(!args[1]) return message.reply("Met un role");
+            if(!args[1]) return message.reply("Met un prefix");
                 prefix = args[1]
                 message.reply("Le préfix a bien été changer");
         }
@@ -121,12 +122,12 @@ bot.on('message', message =>{;
         if(!message.member.voiceChannel){
             let voiceChannel = message.guild.channels.filter(function(chnnel){return chnnel.type === 'voice'}).first();
             voiceChannel.join().then(function(connection){
-
+                    let stream = youtubeStream(args[1]);
                         stream.on('error', function(){
                         message.reply("Impossible de lire la vidéo");
                         connection.disconnect();
                     })
-                    let stream = youtubeStream(args[1]);
+                    
                     connection.playStream(stream).on('end', function(){
                         connection.disconnect();
                     })
