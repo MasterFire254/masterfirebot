@@ -1,4 +1,8 @@
 const discord = require('discord.js');
+const opusscript = require('opusscript');
+const ffmpeg = require('ffmpeg-binaries');
+const youtubeStream = require('ytdl-core');
+const fluentffmpeg = require('fluent-ffmpeg');
 const bot = new discord.Client(); 
 
 var prefix = (".")
@@ -110,6 +114,23 @@ bot.on('message', message =>{;
         }
     }
   
+    if(message.content.startsWith(prefix + "play")){
+        
+        let voiceChannel = message.guild.channels.filter(function(chnnel){return chnnel.type === 'voice'}).first();
+        voiceChannel.join().then(function(connection){
+
+                    stream.on('error', function(){
+                    message.reply("Impossible de lire la vidéo");
+                    connection.disconnect();
+                })
+                let stream = youtubeStream(args[1]);
+                connection.playStream(stream).on('end', function(){
+                    connection.disconnect();
+                })
+       
+        })
+    }
+
 });
 
 bot.on("guildMemberAdd", member =>{
