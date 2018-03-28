@@ -5,8 +5,8 @@ const youtubeStream = require('ytdl-core');
 const fluentffmpeg = require('fluent-ffmpeg');
 const bot = new discord.Client(); 
 
-var prefix = (".")
-var secondaryPrefix = ("?")
+var prefix = (".");
+var secondaryPrefix = ("?");
 
 var role = "Rebel";
 
@@ -14,7 +14,7 @@ var role = "Rebel";
 bot.on('ready', function(){
     
     console.log(`Connecté avec ${bot.user.tag} (${bot.user.id}) sur ${bot.guilds.size} serveurs`);
-    bot.user.setGame('.help');
+    bot.user.setActivity('.help');
 });
 
 bot.on('message', message =>{;
@@ -40,7 +40,7 @@ bot.on('message', message =>{;
             .addField(".discordinfo","Permet d'avoir des infos sur le Discord")
             .addField(".play [link]","Permet de jouer une vidéo graçe à un lien youtube")
             .setColor(255, 0, 0)
-            message.channel.sendEmbed(embed);
+            message.channel.send(embed);
 
     };
 
@@ -85,7 +85,7 @@ bot.on('message', message =>{;
             .addField("Tu nous a rejoin le : " , message.member.joinedAt)
             .addField("Ce discord possèdent " , message.guild.memberCount + " joueurs")
             .setColor("0x0000FF")
-        message.channel.sendEmbed(embed);
+        message.channel.send(embed);
     }
 
     //CHANGE ROLE
@@ -94,6 +94,15 @@ bot.on('message', message =>{;
             if(!args[1]) return message.reply("Met un role");
                 role = args[1]
                 message.reply("Le role a bien été changer");
+        }
+    }
+
+    //CHANGE PREFIX
+    if(message.content.startsWith(prefix + "changeprefix")){
+        if(message.member.permissions.has('ADMINISTRATOR')){
+            if(!args[1]) return message.reply("Met un role");
+                prefix = args[1]
+                message.reply("Le préfix a bien été changer");
         }
     }
 
