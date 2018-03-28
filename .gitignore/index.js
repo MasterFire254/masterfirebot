@@ -26,8 +26,13 @@ bot.on('message', message =>{;
         //HELP
         var embed = new discord.RichEmbed()
             .setTitle("Page d'aide")
+            .addBlankField()
+            .addField("Commandes pour les admins")
             .addField(".ban [@pseudo] ","Permet de ban des joueurs")
             .addField(".kick [@pseudo]", "Permet de kick des joueurs")
+            .addField(".changerole [role]", "Permet de changer le role qui est donné aux nouveaux arrivants")
+            .addBlankField()
+            .addField("Commandes pour tous le mondes")
             .addField(".discordinfo","Permet d'avoir des infos sur le Discord")
             .addField(".helpmusic","Permet de voir les commandes pour les musics")
             .setColor(255, 0, 0)
@@ -70,6 +75,7 @@ bot.on('message', message =>{;
     if(message.content === prefix + "helpmusic"){
         var embed = new discord.RichEmbed()
             .setTitle("Help Music")
+            .setDescription("Les commandes ci-dessous seront bientot disponible.")
             .addField(".play [link]", "Permet de jouer une music a partir d'un lien youtube.")
             .addField(".stop", "Permet de stopper la music.")
             .addField(".skip","Permet de passer à la music suivante.")
@@ -80,15 +86,15 @@ bot.on('message', message =>{;
     if(message.content === prefix + "discordinfo"){
         var embed = new discord.RichEmbed()
             .setTitle("Information du discord")
-            .addField("Nom du discord : " + message.guild.name)
-            .addField("Crée le : " + message.guild.createdAt)
-            .addField("Tu nous a rejoin le : " + message.member.joinedAt)
-            .addField("Il y a " + message.guild.memberCount + " de personnes.")
+            .addField("Nom du discord : " , message.guild.name)
+            .addField("Crée le : " , message.guild.createdAt)
+            .addField("Tu nous a rejoin le : " , message.member.joinedAt)
+            .addField("Ce discord possèdent " , message.guild.memberCount + " joueurs")
             .setColor("0x0000FF")
         message.channel.sendEmbed(embed);
     }
 
-    if(message.content.startsWith(prefix + "changeRole")){
+    if(message.content.startsWith(prefix + "changerole")){
         if(message.member.permissions.has('ADMINISTRATOR')){
             if(!args[1]) return message.reply("Met un role");
                 role = args[1]
@@ -96,6 +102,13 @@ bot.on('message', message =>{;
         }
     }
 
+    if(message.content.startsWith(prefix + "changenamecolor")){
+        if(!args [1]){
+            var embed = new discord.RichEmbed()
+                .setTitle("Couleur possible")
+                .addField()
+        }
+    }
   
 });
 
