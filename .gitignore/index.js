@@ -191,13 +191,12 @@ bot.on('message', message =>{;
     if(message.content.startsWith(prefix + "mute")){
         if(!message.member.permissions.has("BAN_MEMBERS")) return message.reply("Tu n'as pas les permissions nécéssaires.");
         const member = message.mentions.members.first();
-        const mute = message.guild.roles.find('name', 'Mute');
+        const mute = message.guild.roles.find('name', 'mute');
         if(!member) return message.reply("Mauvais usage fait comme ça : `.mute @User#1234`");
          if(member && message.member.permissions.has("BAN_MEMBERS")){
-             if(role){
+             
              member.addRole(mute);
              message.reply("Le joueur a bien été muté.");
-         }else return message.reply("Créer d'abord un role avec pour nom : 'Mute'");
          }
     }
 
