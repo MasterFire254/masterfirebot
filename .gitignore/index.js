@@ -41,21 +41,27 @@ bot.on('message', message =>{;
         message.channel.sendMessage("C'est Benedict ");
     };
 
+    if(message.content === secondaryPrefix + "boss") return message.channel.send("C'est Quentin");
+
     if(message.content === prefix + "help"){
 
         //HELP
         var embed = new discord.RichEmbed()
             .setTitle("Page d'aide")
             .addBlankField()
-            .addField("Commandes pour les admins", "Commandes réservées au best")
+            .addField("COMMANDES POUR LES ADMINS", "Commandes réservées au best")
             .addField(".ban [@pseudo] ","Permet de ban des joueurs")
             .addField(".kick [@pseudo]", "Permet de kick des joueurs")
             .addField(".changerole [role]", "Permet de changer le role qui est donné aux nouveaux arrivants")
             .addField(".changeprefix [prefix]", "Permet de changer le prefix pour faire une commandes")
             .addBlankField()
-            .addField("Commandes pour tous le mondes", "Commandes utiles mais pas marrantes")
+            .addField("COMMANDES POUR TOUS LE MONDE", "Commandes utiles mais pas marrantes")
             .addField(".discordinfo","Permet d'avoir des infos sur le Discord")
+            .addBlankField()
+            .addField("COMMANDES POUR LA MUSIC", "Les commandes qui permettent de lancer de la musique")
             .addField(".play [link]","Permet de jouer une vidéo graçe à un lien youtube")
+            .addField(".skip", "Passe à la music suivante")
+            .addField(".stop", "Arrete la music en cours")
             .setColor(255, 0, 0)
             message.channel.send(embed);
 
