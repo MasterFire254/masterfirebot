@@ -126,6 +126,7 @@ bot.on('message', message =>{;
 
     //CHANGE COLOR
     if(message.content.startsWith(prefix + "changenamecolor")){
+        message.member.displayHexColor("0x0000FF");
         if(!args [1]){
             var embed = new discord.RichEmbed()
                 .setTitle("Couleur possible")
