@@ -68,16 +68,19 @@ bot.on('message', message =>{;
             m.edit(`Pong! Ca a pris  ${Date.now() - then}ms pour envoyer ce message\nPing du bot : ${bot.ping}ms`);
         });
     }
+
     //KICK
     if(message.content.startsWith(prefix + "kick")){
-        if(!message.member.permissions.has('KICK_MEMBERS')) return message.reply("Tu n'as pas les permissions nécéssaires.");
-        const member = message.mentions.members.first();
-        if(!member) return message.reply("Mauvais usage fait comme ça : `.kick @User#1234`");
-        if(member && message.member.permissions.has("KICK_MEMBERS")){
-        member.kick(`Kicker par ${message.author.tag}`);
-        message.reply("Le joueur a bien été kiker.");
+        if(message.member.permissions.has('KICK_MEMBERS')){ 
+            const member = message.mentions.members.first();
+            if(!member) return message.reply("Mauvais usage fait comme ça : `.kick @User#1234`");
+            if(member && message.member.permissions.has("KICK_MEMBERS")){
+                member.kick(`Kicker par ${message.author.tag}`);
+                message.reply("Le joueur a bien été kiker.");
+            }
+        }else{
+            message.reply("Tu n'as pas les permissions nécéssaires.");
         }
-
     }
 
     //BAN
@@ -126,7 +129,7 @@ bot.on('message', message =>{;
 
     //CHANGE COLOR
     if(message.content.startsWith(prefix + "changenamecolor")){
-        message.member.displayHexColor("0x0000FF");
+        message.member.colorRole.hexColor('RED');
         if(!args [1]){
             var embed = new discord.RichEmbed()
                 .setTitle("Couleur possible")
@@ -144,7 +147,7 @@ bot.on('message', message =>{;
             }
 
             var serveur = serveurs[message.guild.id];
-            
+            message.reply("Music ajoutée à la liste");
             serveur.queue.push(args[1]);
 
 
