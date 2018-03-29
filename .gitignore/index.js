@@ -18,7 +18,10 @@ function play(connection, message){
 
     serveur.queue.shift();
     serveur.dispatcher.on("end", function(){
-        if(serveur.queue[0]) play(connection, message);
+        if(serveur.queue[0]){ 
+            play(connection, message)
+            message.reply("Musique skipée");
+        }
         else connection.disconnect();
 
     })
@@ -146,18 +149,22 @@ bot.on('message', message =>{;
 
             if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection){
                 play(connection, message);
+                message.reply("Musique lancé");
             });
 
     }
 
-    if(message.content === "skip"){
+    if(message.content === prefix + "skip"){
         var serveur = serveurs[message.guild.id];
+        message
         if(serveur.dispatcher) serveur.dispatcher.end();
     }
 
-    if(message.content === "stop"){
-        var serveur = message.guild.id;
+    if(message.content === prefix + "stop"){
+        var serveur = serveurs[message.guild.id];
+
         if(message.guild.voiceConnection) message.guild.voiceConnection.disconnect();
+        message.reply("Musique stopée");
     }
 
     if(message.content === prefix + "actualprefix") return message.reply("Le prefix actuel est : " + prefix);
