@@ -10,6 +10,19 @@ var secondaryPrefix = ("?");
 
 var role = "Rebel";
 
+var serveurs = {};
+function play(connection, message){
+    var serveur = serveurs[message.guild.id];
+
+    serveur.dispatcher = connection.playStream(youtubeStream(serveur.queue[0], {filter: "audioonly"}));
+
+    serveur.queue.shift();
+    serveur.dispatcher.on("end", function(){
+        if(serveur.queue[0]) play(connection, message);
+        else connection.disconnect();
+
+    })
+}
 
 bot.on('ready', function(){
     
@@ -119,24 +132,32 @@ bot.on('message', message =>{;
   
     //MUSIC
     if(message.content.startsWith(prefix + "play")){
-        if(message.member.voiceChannel){
+        if(!message.member.voiceChannel) return message.reply("Va dans un channel vocal");
             if(!args [1]) return message.reply("Met un lien");
-            let voiceChannel = message.guild.channels.filter(function(chnnel){return chnnel.type === 'voice'}).first();
-            voiceChannel.join(message.member.voiceChannel).then(function(connection){
-                    let stream = youtubeStream(args[1]);
-                        stream.on('error', function(){
-                        message.reply("Impossible de lire la vidéo");
-                        connection.disconnect();
-                    })
-                    
-                    connection.playStream(stream).on('end', function(){
-                        connection.disconnect();
-                    })
-        
-            })
-        }else{
-            message.reply("Va dans un channel vocal");
-        }
+
+            if(!serveurs[message.guild.id]) serveurs[message.guild.id] = {
+                queue: []
+            }
+
+            var serveur = serveurs[message.guild.id];
+            
+            serveur.queue.push(args[1]);
+
+
+            if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection){
+                play(connection, message);
+            });
+
+    }
+
+    if(message.content === "skip"){
+        var serveur = serveurs[message.guild.id];
+        if(serveur.dispatcher) serveur.dispatcher.end();
+    }
+
+    if(message.content === "stop"){
+        var serveur = message.guild.id;
+        if(message.guild.voiceConnection) message.guild.voiceConnection.disconnect();
     }
 
     if(message.content === prefix + "actualprefix") return message.reply("Le prefix actuel est : " + prefix);
