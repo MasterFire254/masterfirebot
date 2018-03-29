@@ -31,6 +31,8 @@ bot.on('ready', function(){
     
     console.log(`Connecté avec ${bot.user.tag} (${bot.user.id}) sur ${bot.guilds.size} serveurs`);
     bot.user.setActivity('.help');
+    bot.user.setAvatar("https://cdn.discordapp.com/attachments/314362582175842305/428580971269324831/unknown.png");
+    bot.user.setUsername('LesRebels_Bot');
 });
 
 bot.on('message', message =>{;
@@ -178,6 +180,19 @@ bot.on('message', message =>{;
     }
 
     if(message.content === prefix + "actualprefix") return message.reply("Le prefix actuel est : " + prefix);
+
+    if(message.content.startsWith(prefix + "mute")){
+        if(!message.member.permissions.has("BAN_MEMBERS")) return message.reply("Tu n'as pas les permissions nécéssaires.");
+        const member = message.mentions.members.first();
+        const mute = message.guild.roles.find('name', 'Mute');
+        if(!member) return message.reply("Mauvais usage fait comme ça : `.mute @User#1234`");
+         if(member && message.member.permissions.has("BAN_MEMBERS")){
+             member.addRole(mute);
+             message.reply("Le joueur a bien été banni.");
+         }
+    }
+
+    
 
 });
 
