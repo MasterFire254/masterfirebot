@@ -122,7 +122,7 @@ bot.on('message', message =>{;
         if(message.member.voiceChannel){
             if(!args [1]) return message.reply("Met un lien");
             let voiceChannel = message.guild.channels.filter(function(chnnel){return chnnel.type === 'voice'}).first();
-            voiceChannel.join().then(function(connection){
+            voiceChannel.join(message.member.voiceChannel).then(function(connection){
                     let stream = youtubeStream(args[1]);
                         stream.on('error', function(){
                         message.reply("Impossible de lire la vidéo");
@@ -138,6 +138,9 @@ bot.on('message', message =>{;
             message.reply("Va dans un channel vocal");
         }
     }
+
+    if(message.content === prefix + "actualprefix") return message.reply("Le prefix actuel est : " + prefix);
+
 });
 
 //AUTO ROLE ET BIENVENUE
