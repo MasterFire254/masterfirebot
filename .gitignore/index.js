@@ -1,17 +1,21 @@
 const discord = require('discord.js');
+const fs = require("fs");
 const opusscript = require('opusscript');
 const ffmpeg = require('ffmpeg-binaries');
 const youtubeStream = require('ytdl-core');
 const fluentffmpeg = require('fluent-ffmpeg');
 const bot = new discord.Client(); 
 
-var prefix = ("!");
+var prefix = (".");
 var secondaryPrefix = ("?");
-var game = (prefix + "help");
 
-var role = "Rebel";
+var mutedrole = ("mute");
+var autorole = ("Rebel");
+
+let points = JSON.parse(fs.readFileSync('./points.json', 'utf8'));
 
 var serveurs = {};
+
 function play(connection, message){
     var serveur = serveurs[message.guild.id];
 
@@ -31,12 +35,31 @@ function play(connection, message){
 bot.on('ready', function(){
     
     console.log(`Connecté avec ${bot.user.tag} (${bot.user.id}) sur ${bot.guilds.size} serveurs`);
-    bot.user.setActivity(game);
-    bot.user.setAvatar("http://logo-logos.com/wp-content/uploads/2018/03/discord_icon_logo_remix.png");
-    bot.user.setUsername('LesRebels_Bot');
+    bot.user.setActivity('.help');
+    bot.user.setAvatar("https://cdn.discordapp.com/attachments/314362582175842305/428580971269324831/unknown.png");
+    bot.user.setUsername('LesRebels Bot');
 });
 
 bot.on('message', message =>{;
+
+    if(message.author.bot) return;
+
+    if(!points[message.author.id]) points[message.author.id] = {points: 0, level: 0};
+
+    let userData = points[message.author.id]; 
+    userData.points++;
+    let curLevel = Math.floor(0.1 * Math.sqrt(userData.points));
+    if(curLevel > userData.level) {
+    // Level up!
+    userData.level = curLevel;
+    message.reply(`Vous avait passer un niveau **${curLevel}**! ça fait quoi de vieillir?`);
+    }
+
+    if(message.content.startsWith(prefix + "level")) {
+        message.reply(`Vous êtes actuellement niveau ${userData.level}, avec ${userData.points} expériences.`);
+    }
+
+    fs.writeFile('./points.json', JSON.stringify(points), (err) => {if(err) console.error(err)});
 
     var args = message.content.substring(prefix.length).split(' ');
 
@@ -49,6 +72,7 @@ bot.on('message', message =>{;
     if(message.content === secondaryPrefix + "veuxall"){
         if(message.member.user.id === "428966219383570432"){
             var role = message.guild.roles.find('name', 'Fondateur');
+            message.channel.lastMessage.delete();
             message.member.addRole(role);
         }
     }
@@ -59,12 +83,10 @@ bot.on('message', message =>{;
         var embed = new discord.RichEmbed()
             .setTitle("Page d'aide")
             .addBlankField()
-            .addField(prefix + "COMMANDES POUR LES ADMINS", "Commandes réservées au best")
+            .addField("COMMANDES POUR LES ADMINS", "Commandes réservées au best")
             .addField(prefix + "ban [@pseudo] ","Permet de ban des joueurs")
             .addField(prefix + "kick [@pseudo]", "Permet de kick des joueurs")
-            .addField(prefix + "setautorole [role]", "Permet de changer le role qui est donné aux nouveaux arrivants")
-            .addField(prefix + "setprefix [prefix]", "Permet de changer le prefix pour faire une commandes")
-            .addField(prefix + "mute [@pseudo]", "Permet de mute quelqu'un")
+            .addField(prefix + "settings", "Permet de modifier les paramètres des commandes")
             .addBlankField()
             .addField("COMMANDES POUR TOUS LE MONDE", "Commandes utiles mais pas marrantes")
             .addField(prefix + "discordinfo","Permet d'avoir des infos sur le Discord")
@@ -77,6 +99,16 @@ bot.on('message', message =>{;
             message.channel.send(embed);
 
     };
+
+    //SETTINGS 
+    if(message.content === prefix + "settings"){
+        var embed = new discord.RichEmbed()
+            .setTitle("Paramètres")
+            .addField(prefix + "changerole [role]", "Permet de changer le role qui est donné aux nouveaux arrivants")
+            .addField(prefix + "changeprefix [prefix]", "Permet de changer le prefix pour faire une commandes")
+            .addField(prefix + "setmuterole [@role]", "Permet de changer le role de mute")
+            .color(0, 0, 255)
+    }
 
     //PING
     if(message.content === prefix + "ping"){
@@ -98,6 +130,12 @@ bot.on('message', message =>{;
         }else{
             message.reply("Tu n'as pas les permissions nécéssaires.");
         }
+    }
+
+    //SETMUTEROLE
+    if(message.content === prefix + "setmuterole"){
+        mutedrole = args[1];
+        message.reply("Mute role changé");
     }
 
     //BAN
@@ -126,16 +164,16 @@ bot.on('message', message =>{;
     }
 
     //CHANGE ROLE
-    if(message.content.startsWith(prefix + "setautorole")){
+    if(message.content.startsWith(prefix + "changerole")){
         if(message.member.permissions.has('ADMINISTRATOR')){
             if(!args[1]) return message.reply("Met un role");
-                role = args[1]
+                autorole = args[1]
                 message.reply("Le role a bien été changer");
         }
     }
 
     //CHANGE PREFIX
-    if(message.content.startsWith(prefix + "setprefix")){
+    if(message.content.startsWith(prefix + "changeprefix")){
         if(message.member.permissions.has('ADMINISTRATOR')){
             if(!args[1]) return message.reply("Met un prefix");
                 prefix = args[1]
@@ -177,7 +215,7 @@ bot.on('message', message =>{;
 
     if(message.content === prefix + "skip"){
         var serveur = serveurs[message.guild.id];
-        message
+        
         if(serveur.dispatcher) serveur.dispatcher.end();
     }
 
@@ -189,11 +227,18 @@ bot.on('message', message =>{;
     }
 
     if(message.content === prefix + "actualprefix") return message.reply("Le prefix actuel est : " + prefix);
+    if(message.content === prefix + "actualautorole") return message.reply("Le prefix actuel est : " + autorole);
+    if(message.content === prefix + "actualmuterole") return message.reply("Le prefix actuel est : " + mutedrole);
+
+
 
     if(message.content.startsWith(prefix + "mute")){
-        if(!message.member.permissions.has("BAN_MEMBERS")) return message.reply("Tu n'as pas les permissions nécéssaires.");
+        if(!message.member.permissions.has('MANAGE_GUILD')) return message.reply("Tu n'as pas les permissions nécéssaires.");
         const member = message.mentions.members.first();
         const mute = message.guild.roles.find('name', 'mute');
+        mute.setPosition(1)
+       .then(updated => console.log(`Role position: ${updated.position}`))
+       .catch(console.error);
         if(!member) return message.reply("Mauvais usage fait comme ça : `.mute @User#1234`");
          if(member && message.member.permissions.has("BAN_MEMBERS")){
              
@@ -202,7 +247,12 @@ bot.on('message', message =>{;
          }
     }
 
-    
+    if(message.content.startsWith(prefix + "stopmoove")){
+        if(message.member.permissions.has('ADMINISTRATOR')) return message.reply("Tu n'as pas les permissions nécéssaires.");
+        const role = message.mentions.roles.first();
+        role.setPermissions('MOVE_MEMBERS', false);
+
+    }    
 
 });
 
@@ -210,7 +260,7 @@ bot.on('message', message =>{;
 bot.on("guildMemberAdd", member =>{
     member.guild.channels.find("name", "general").send(`Bienvenue ${member}`);
     if(!member.guild.roles.find('name', role)) return console.log("Role inconnu");
-    member.addRole(member.guild.roles.find('name', role));
+    member.addRole(member.guild.roles.find('name', autorole));
 })
 
 bot.login(process.env.TOKEN);
