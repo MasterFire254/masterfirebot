@@ -33,8 +33,8 @@ bot.on('ready', function(){
     
     console.log(`Connecté avec ${bot.user.tag} (${bot.user.id}) sur ${bot.guilds.size} serveurs`);
     bot.user.setActivity(prefix + 'help');
-    bot.user.setAvatar("https://cdn.discordapp.com/attachments/314362582175842305/428580971269324831/unknown.png");
-    bot.user.setUsername('LesRebels Bot');
+    bot.user.setAvatar("http://logo-logos.com/wp-content/uploads/2018/03/discord_icon_logo_remix.png");
+    bot.user.setUsername('LesRebels_Bot');
 });
 
 bot.on('message', message =>{;
