@@ -59,19 +59,20 @@ bot.on('message', message =>{;
         var embed = new discord.RichEmbed()
             .setTitle("Page d'aide")
             .addBlankField()
-            .addField("COMMANDES POUR LES ADMINS", "Commandes réservées au best")
-            .addField(".ban [@pseudo] ","Permet de ban des joueurs")
-            .addField(".kick [@pseudo]", "Permet de kick des joueurs")
-            .addField(".changerole [role]", "Permet de changer le role qui est donné aux nouveaux arrivants")
-            .addField(".changeprefix [prefix]", "Permet de changer le prefix pour faire une commandes")
+            .addField(prefix + "COMMANDES POUR LES ADMINS", "Commandes réservées au best")
+            .addField(prefix + "ban [@pseudo] ","Permet de ban des joueurs")
+            .addField(prefix + "kick [@pseudo]", "Permet de kick des joueurs")
+            .addField(prefix + "setautorole [role]", "Permet de changer le role qui est donné aux nouveaux arrivants")
+            .addField(prefix + "setprefix [prefix]", "Permet de changer le prefix pour faire une commandes")
+            .addField(prefix + "mute [@pseudo]", "Permet de mute quelqu'un")
             .addBlankField()
             .addField("COMMANDES POUR TOUS LE MONDE", "Commandes utiles mais pas marrantes")
-            .addField(".discordinfo","Permet d'avoir des infos sur le Discord")
+            .addField(prefix + "discordinfo","Permet d'avoir des infos sur le Discord")
             .addBlankField()
             .addField("COMMANDES POUR LA MUSIC", "Les commandes qui permettent de lancer de la musique")
-            .addField(".play [link]","Permet de jouer une vidéo graçe à un lien youtube")
-            .addField(".skip", "Passe à la music suivante")
-            .addField(".stop", "Arrete la music en cours")
+            .addField(prefix + "play [link]","Permet de jouer une vidéo graçe à un lien youtube")
+            .addField(prefix + "skip", "Passe à la music suivante")
+            .addField(prefix + "stop", "Arrete la music en cours")
             .setColor(255, 0, 0)
             message.channel.send(embed);
 
@@ -125,7 +126,7 @@ bot.on('message', message =>{;
     }
 
     //CHANGE ROLE
-    if(message.content.startsWith(prefix + "changerole")){
+    if(message.content.startsWith(prefix + "setautorole")){
         if(message.member.permissions.has('ADMINISTRATOR')){
             if(!args[1]) return message.reply("Met un role");
                 role = args[1]
@@ -134,7 +135,7 @@ bot.on('message', message =>{;
     }
 
     //CHANGE PREFIX
-    if(message.content.startsWith(prefix + "changeprefix")){
+    if(message.content.startsWith(prefix + "setprefix")){
         if(message.member.permissions.has('ADMINISTRATOR')){
             if(!args[1]) return message.reply("Met un prefix");
                 prefix = args[1]
