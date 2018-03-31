@@ -6,7 +6,7 @@ const youtubeStream = require('ytdl-core');
 const fluentffmpeg = require('fluent-ffmpeg');
 const bot = new discord.Client(); 
 
-var prefix = (".");
+var prefix = ("!");
 var secondaryPrefix = ("?");
 
 var mutedrole = ("mute");
@@ -35,7 +35,7 @@ function play(connection, message){
 bot.on('ready', function(){
     
     console.log(`Connecté avec ${bot.user.tag} (${bot.user.id}) sur ${bot.guilds.size} serveurs`);
-    bot.user.setActivity('.help');
+    bot.user.setActivity(prefix + 'help');
     bot.user.setAvatar("https://cdn.discordapp.com/attachments/314362582175842305/428580971269324831/unknown.png");
     bot.user.setUsername('LesRebels Bot');
 });
