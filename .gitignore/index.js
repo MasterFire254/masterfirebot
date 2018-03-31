@@ -215,9 +215,6 @@ bot.on('message', message =>{;
         if(!message.member.permissions.has('MANAGE_GUILD')) return message.reply("Tu n'as pas les permissions nécéssaires.");
         const member = message.mentions.members.first();
         const mute = message.guild.roles.find('name', 'mute');
-        mute.setPosition(1)
-       .then(updated => console.log(`Role position: ${updated.position}`))
-       .catch(console.error);
         if(!member) return message.reply("Mauvais usage fait comme ça : `.mute @User#1234`");
          if(member && message.member.permissions.has("BAN_MEMBERS")){
              
