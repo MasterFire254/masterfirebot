@@ -109,7 +109,7 @@ bot.on('message', message =>{;
             .addField(prefix + "changerole [role]", "Permet de changer le role qui est donné aux nouveaux arrivants")
             .addField(prefix + "changeprefix [prefix]", "Permet de changer le prefix pour faire une commandes")
             .addField(prefix + "setmuterole [@role]", "Permet de changer le role de mute")
-            .color(0, 0, 255)
+            .setColor(0, 0, 255)
     }
 
     //PING
