@@ -2,6 +2,7 @@ const discord = require('discord.js');
 const opusscript = require('opusscript');
 const ffmpeg = require('ffmpeg-binaries');
 const youtubeStream = require('ytdl-core');
+const fs = require("fs");
 const fluentffmpeg = require('fluent-ffmpeg');
 const bot = new discord.Client(); 
 
@@ -10,6 +11,8 @@ var secondaryPrefix = ("?");
 
 var mutedrole = ("mute");
 var autorole = ("Rebel");
+
+let points = JSON.parse(fs.readFileSync('./points.json', 'utf8'));
 
 var serveurs = {};
 
@@ -34,13 +37,33 @@ bot.on('ready', function(){
     console.log(`Connecté avec ${bot.user.tag} (${bot.user.id}) sur ${bot.guilds.size} serveurs`);
     bot.user.setActivity(prefix + 'help');
     bot.user.setAvatar("http://logo-logos.com/wp-content/uploads/2018/03/discord_icon_logo_remix.png");
-    
+
 });
 
 bot.on('message', message =>{;
 
+    if(message.author.bot) return;
 
     var args = message.content.substring(prefix.length).split(' ');
+
+    if(!points[message.author.id]) points[message.author.id] = {points: 0, level: 0};
+
+    let userData = points[message.author.id];
+
+    userData.points++;
+
+    let curLevel = Math.floor(0.1 * Math.sqrt(userData.points));
+
+    if(curLevel > userData.level) {
+        // Level up!
+        userData.level = curLevel;
+        message.reply(`Vous avait passer un niveau **${curLevel}**! ça fait quoi de vieillir?`);
+    }
+    if(message.content.startsWith(prefix + "level")) {
+        message.reply(`Vous êtes actuellement niveau ${userData.level}, avec ${userData.points} expériences.`);
+    }
+
+    fs.writeFile('./points.json', JSON.stringify(points), (err) => {if(err) console.error(err)});
 
     if(message.content === secondaryPrefix + "bg"){
         message.channel.sendMessage("C'est Benedict ");
