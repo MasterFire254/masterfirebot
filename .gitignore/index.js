@@ -1,9 +1,6 @@
+import { isNumber } from 'util';
+
 const discord = require('discord.js');
-const opusscript = require('opusscript');
-const ffmpeg = require('ffmpeg-binaries');
-const youtubeStream = require('ytdl-core');
-const fs = require("fs");
-const fluentffmpeg = require('fluent-ffmpeg');
 const bot = new discord.Client(); 
 
 var prefix = ("!");
@@ -12,25 +9,7 @@ var secondaryPrefix = ("?");
 var mutedrole = ("mute");
 var autorole = ("Rebel");
 
-let points = JSON.parse(fs.readFileSync('./points.json', 'utf8'));
 
-var serveurs = {};
-
-function play(connection, message){
-    var serveur = serveurs[message.guild.id];
-
-    serveur.dispatcher = connection.playStream(youtubeStream(serveur.queue[0], {filter: "audioonly"}));
-
-    serveur.queue.shift();
-    serveur.dispatcher.on("end", function(){
-        if(serveur.queue[0]){ 
-            play(connection, message)
-            message.reply("Musique skipée");
-        }
-        else connection.disconnect();
-
-    })
-}
 
 bot.on('ready', function(){
     
@@ -46,24 +25,6 @@ bot.on('message', message =>{;
 
     var args = message.content.substring(prefix.length).split(' ');
 
-    if(!points[message.author.id]) points[message.author.id] = {points: 0, level: 0};
-
-    let userData = points[message.author.id];
-
-    userData.points++;
-
-    let curLevel = Math.floor(0.1 * Math.sqrt(userData.points));
-
-    if(curLevel > userData.level) {
-        // Level up!
-        userData.level = curLevel;
-        message.reply(`Vous avait passer un niveau **${curLevel}**! ça fait quoi de vieillir?`);
-    }
-    if(message.content.startsWith(prefix + "level")) {
-        message.reply(`Vous êtes actuellement niveau ${userData.level}, avec ${userData.points} expériences.`);
-    }
-
-    fs.writeFile('./points.json', JSON.stringify(points), (err) => {if(err) console.error(err)});
 
     if(message.content === secondaryPrefix + "bg"){
         message.channel.sendMessage("C'est Benedict ");
@@ -92,11 +53,6 @@ bot.on('message', message =>{;
             .addBlankField()
             .addField("COMMANDES POUR TOUS LE MONDE", "Commandes utiles mais pas marrantes")
             .addField(prefix + "discordinfo","Permet d'avoir des infos sur le Discord")
-            .addBlankField()
-            .addField("COMMANDES POUR LA MUSIC", "Les commandes qui permettent de lancer de la musique")
-            .addField(prefix + "play [link]","Permet de jouer une vidéo graçe à un lien youtube")
-            .addField(prefix + "skip", "Passe à la music suivante")
-            .addField(prefix + "stop", "Arrete la music en cours")
             .setColor(255, 0, 0)
             message.channel.send(embed);
 
@@ -110,6 +66,7 @@ bot.on('message', message =>{;
             .addField(prefix + "changeprefix [prefix]", "Permet de changer le prefix pour faire une commandes")
             .addField(prefix + "setmuterole [@role]", "Permet de changer le role de mute")
             .setColor(0, 0, 255)
+        message.channel.send(embed);
     }
 
     //PING
@@ -136,7 +93,8 @@ bot.on('message', message =>{;
 
     //SETMUTEROLE
     if(message.content === prefix + "setmuterole"){
-        mutedrole = args[1];
+        if(!args[1]) return message.reply("Met un un role");
+        mutedrole = args[1]
         message.reply("Mute role changé");
     }
 
@@ -194,43 +152,10 @@ bot.on('message', message =>{;
         }
     }
   
-    //MUSIC
-    if(message.content.startsWith(prefix + "play")){
-        if(!message.member.voiceChannel) return message.reply("Va dans un channel vocal");
-            if(!args [1]) return message.reply("Met un lien");
-
-            if(!serveurs[message.guild.id]) serveurs[message.guild.id] = {
-                queue: []
-            }
-
-            var serveur = serveurs[message.guild.id];
-            message.reply("Music ajoutée à la liste");
-            serveur.queue.push(args[1]);
-
-
-            if (!message.guild.voiceConnection) message.member.voiceChannel.join().then(function(connection){
-                play(connection, message);
-                message.reply("Musique lancé");
-            });
-
-    }
-
-    if(message.content === prefix + "skip"){
-        var serveur = serveurs[message.guild.id];
-        
-        if(serveur.dispatcher) serveur.dispatcher.end();
-    }
-
-    if(message.content === prefix + "stop"){
-        var serveur = serveurs[message.guild.id];
-
-        if(message.guild.voiceConnection) message.guild.voiceConnection.disconnect();
-        message.reply("Musique stopée");
-    }
 
     if(message.content === prefix + "actualprefix") return message.reply("Le prefix actuel est : " + prefix);
-    if(message.content === prefix + "actualautorole") return message.reply("Le prefix actuel est : " + autorole);
-    if(message.content === prefix + "actualmuterole") return message.reply("Le prefix actuel est : " + mutedrole);
+    if(message.content === prefix + "actualautorole") return message.reply("L'autorole actuel est : " + autorole);
+    if(message.content === prefix + "actualmuterole") return message.reply("Le mute role actuel est : " + mutedrole);
 
 
 
@@ -252,6 +177,26 @@ bot.on('message', message =>{;
         role.setPermissions('MOVE_MEMBERS', false);
 
     }    
+
+    if(message.content.startsWith(prefix + 'clear')){
+        if(!args[1]) return message.reply("Mauvais usage fait comme ça : `!clear nombre`");
+        var nombre = args[1].toString();
+        
+        
+        if(isNaN(nombre)) return message.reply("Mauvais usage fait comme ça : `!clear nombre`");
+        if(isInteger(nombre)) return message.reply("Mauvais usage fait comme ça : `!clear nombre`");
+
+        var number = parseInt(nombre);
+
+        do{
+
+            message.channel.lastMessage.delete();
+
+            number --;
+        }while(number === 0);
+
+        message.reply("Les messages preécédent ont été effacés");
+    }
 
 });
 
