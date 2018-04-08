@@ -46,6 +46,7 @@ bot.on('message', message =>{;
             .addField("COMMANDES POUR LES ADMINS", "Commandes réservées au best")
             .addField(prefix + "ban [@pseudo] ","Permet de ban des joueurs")
             .addField(prefix + "kick [@pseudo]", "Permet de kick des joueurs")
+            .addField(prefix + "clear [nombre]", "Permet d'enlever un certain nombre de messages sur le serveur")
             .addField(prefix + "settings", "Permet de modifier les paramètres des commandes")
             .addBlankField()
             .addField("COMMANDES POUR TOUS LE MONDE", "Commandes utiles mais pas marrantes")
@@ -167,13 +168,7 @@ bot.on('message', message =>{;
              message.reply("Le joueur a bien été muté.");
          }
     }
-
-    if(message.content.startsWith(prefix + "stopmoove")){
-        if(message.member.permissions.has('ADMINISTRATOR')) return message.reply("Tu n'as pas les permissions nécéssaires.");
-        const role = message.mentions.roles.first();
-        role.setPermissions('MOVE_MEMBERS', false);
-
-    }    
+ 
 
     if(message.content.startsWith(prefix + 'clear')){
         if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Tu n'as pas la permissions");
