@@ -182,7 +182,6 @@ bot.on('message', message =>{;
         
         
         if(isNaN(nombre)) return message.reply("Mauvais usage fait comme ça : `!clear nombre`");
-        if(isInteger(nombre)) return message.reply("Mauvais usage fait comme ça : `!clear nombre`");
 
         var number = parseInt(nombre);
 
