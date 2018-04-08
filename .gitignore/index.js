@@ -176,17 +176,16 @@ bot.on('message', message =>{;
     }    
 
     if(message.content.startsWith(prefix + 'clear')){
+        if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("Tu n'as pas la permissions");
         if(!args[1]) return message.reply("Mauvais usage fait comme ça : `!clear nombre`");
-        var nombre = args[1].toString();
         
         
-        if(isNaN(nombre)) return message.reply("Mauvais usage fait comme ça : `!clear nombre`");
+        
+        if(isNaN(args[1])) return message.reply("Mauvais usage fait comme ça : `!clear nombre`");
 
-        var number = parseInt(nombre);
-
-        for(var i = 0; i === nombre; i++){
-            message.channel.lastMessage.delete();
-        }
+        message.channel.bulkDelete(args[1]).then(() =>{
+            message.channel.send(`${args[1]} messages on été enlevé`).then(msg => msg.delete(5000))
+        });
 
         message.reply("Les messages preécédent ont été effacés");
     }
