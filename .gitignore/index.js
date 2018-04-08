@@ -1,5 +1,3 @@
-import { isNumber } from 'util';
-
 const discord = require('discord.js');
 const bot = new discord.Client(); 
 
