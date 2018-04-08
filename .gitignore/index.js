@@ -182,15 +182,13 @@ bot.on('message', message =>{;
         
         
         if(isNaN(nombre)) return message.reply("Mauvais usage fait comme ça : `!clear nombre`");
+        if(isInteger(nombre)) return message.reply("Mauvais usage fait comme ça : `!clear nombre`");
 
         var number = parseInt(nombre);
 
-        do{
-
+        for(var i = 0; i === nombre; i++){
             message.channel.lastMessage.delete();
-
-            number --;
-        }while(number === 0);
+        }
 
         message.reply("Les messages preécédent ont été effacés");
     }
