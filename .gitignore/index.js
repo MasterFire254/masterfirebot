@@ -13,7 +13,6 @@ bot.on('ready', function(){
     
     console.log(`Connecté avec ${bot.user.tag} (${bot.user.id}) sur ${bot.guilds.size} serveurs`);
     bot.user.setActivity(prefix + 'help');
-    bot.user.setAvatar("http://logo-logos.com/wp-content/uploads/2018/03/discord_icon_logo_remix.png");
 
 });
 
